@@ -85,7 +85,7 @@ async function init() {
     console.log(`All done, check the screenshots. ✨`)
     await browser.close()
 
-    const logger = fs.createWriteStream(`/home/hipi/Sites/GooDee/nft-scraper/logs/${(new Date().toJSON().slice(0,19))}.txt`, {
+    const logger = fs.createWriteStream(`/home/hipi/Sites/GooDee/nft-scraper/logs/${(new Date().toJSON())}.txt`, {
         flags: 'a'
     });
 
