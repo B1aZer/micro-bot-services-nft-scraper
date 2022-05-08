@@ -1,0 +1,19 @@
+{
+  "name": "nft-scraper",
+  "version": "1.0.0",
+  "description": "scrape last 500-1000 items and group up by name from etherscan",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.27.2",
+    "puppeteer": "^13.7.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0",
+    "random-useragent": "^0.5.0",
+    "twitter-api-v2": "^1.12.0"
+  }
+}
