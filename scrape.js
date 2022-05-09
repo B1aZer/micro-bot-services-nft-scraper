@@ -17,10 +17,13 @@ const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit 
 
 const userAgent = randomUseragent.getRandom();
 const UA = userAgent || USER_AGENT;
-
+console.log('------------------------------');
+console.log((new Date()).toISOString());
+console.log('Start');
 init();
 
 async function init() {
+    console.log(`Lets go!`)
     const browser = await puppeteer.launch({ headless: true })
     const page = await browser.newPage()
 
@@ -35,23 +38,26 @@ async function init() {
     });
     await page.setUserAgent(UA);
     await page.setJavaScriptEnabled(true);
-
+    console.log(`Go to page`)
     await page.goto('https://etherscan.io/nfttracker#mint', {
         waitUntil: 'networkidle0',
     })
     //await page.waitForTimeout(10000)
     //await page.waitForSelector('#mytable_mint .hash-tag');
+    console.log(`Waiting`)
     await page.waitForTimeout(25000)
+    console.log(`Screen`)
     await page.screenshot({ path: 'etherscan.png', fullPage: true })
     //select 100
+    console.log(`Select`)
     await page.select('#mytable_mint_length > label > select', '100');
     await page.waitForNetworkIdle()
-
+    console.log(`Scrap`)
     let data = await page.evaluate((sel) => {
         const tds = Array.from(document.querySelectorAll(sel))
         return tds.map(td => td.innerText === 'View NFT' ? `https://etherscan.io/address/${td.innerHTML.split('/')[2]}`: td.innerText)
     }, "#mytable_mint > tbody > tr td");
-
+    console.log(`Scrap other pages`)
     for (let i = 0; i < 9; i++) {
         await page.click('#mytable_mint_wrapper li.paginate_button.page-item.next > a');
         await page.waitForNetworkIdle();
@@ -65,7 +71,7 @@ async function init() {
         data = [...data, ...newData];
 
     }
-
+    console.log(`Map`)
     const collections = new Map();
     for (let i = 0; i < data.length; i+=9) {
         const url = data[i+8];
@@ -80,6 +86,7 @@ async function init() {
             collections.set(name, {url: url, count: 1, txs: [tx]});
         }
     }
+    console.log(`Sort`)
     const mapSorted = new Map([...collections.entries()].sort((a,b) => b[1].count - a[1].count));
 
     console.log(`All done, check the screenshots. ✨`)
@@ -88,7 +95,7 @@ async function init() {
     const logger = fs.createWriteStream(`/home/hipi/Sites/GooDee/nft-scraper/logs/${(new Date().toJSON())}.txt`, {
         flags: 'a'
     });
-
+    console.log(`Write`)
     for (const [key, obj] of mapSorted.entries()) {
         logger.write(`${key} | ${obj.count} | <${obj.url}>\n`)
     }
