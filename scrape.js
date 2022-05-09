@@ -41,8 +41,8 @@ async function init() {
     })
     //await page.waitForTimeout(10000)
     //await page.waitForSelector('#mytable_mint .hash-tag');
-    //await page.screenshot({ path: 'etherscan.png', fullPage: true })
-    await page.waitForTimeout(10000)
+    await page.waitForTimeout(25000)
+    await page.screenshot({ path: 'etherscan.png', fullPage: true })
     //select 100
     await page.select('#mytable_mint_length > label > select', '100');
     await page.waitForNetworkIdle()
