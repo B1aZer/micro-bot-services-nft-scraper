@@ -1,3 +1,6 @@
+// OPTIMIZE:
+// 1. Log in
+// 2. Chain proxy https://stackoverflow.com/questions/68930114/bypass-cloudflares-captcha-with-headless-chrome-using-puppeteer-on-heroku
 process.env.TZ = 'America/Toronto' 
 process.on('unhandledRejection', error => {
     throw error;
