@@ -13,8 +13,8 @@ const userClient = new TwitterApi({
     // Following access tokens are not required if you are
     // at part 1 of user-auth process (ask for a request token)
     // or if you want a app-only client (see below)
-    accessToken: '41890375-lzLkRN8mby5403MusMFzK8VeVbuSyd2aVoejewZdd',
-    accessSecret: 'BqXUHskZRV25p9Wl7iiRl5fURu8DDFq9nIEXQ3It8jxQT',
+    accessToken: '41890375-2jC8etQNIDnskeTxifSLD45FsufIBXSewLTdUGhpa',
+    accessSecret: 'LrVnDgj1tEDTaSn1gR8D8klkUEMhHRZOnmAbFrh8Tl2KD',
   });
   
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
