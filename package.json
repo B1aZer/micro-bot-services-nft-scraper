@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
     "puppeteer": "^13.7.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.9.0",

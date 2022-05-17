@@ -1,3 +1,4 @@
+require('dotenv').config();
 // OPTIMIZE:
 // 1. Log in
 // 2. Chain proxy https://stackoverflow.com/questions/68930114/bypass-cloudflares-captcha-with-headless-chrome-using-puppeteer-on-heroku
@@ -100,7 +101,7 @@ async function init() {
     });
     console.log(`Write`)
     for (const [key, obj] of mapSorted.entries()) {
-        logger.write(`${key} | ${obj.count} | <${obj.url}>\n`)
+        logger.write(`${key} ${process.env.LOG_FILES_SEPARATOR} ${obj.count} ${process.env.LOG_FILES_SEPARATOR} <${obj.url}>\n`)
     }
       
     logger.end()

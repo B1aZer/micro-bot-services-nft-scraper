@@ -1,3 +1,4 @@
+require('dotenv').config();
 process.env.TZ = 'America/Toronto'
 process.on('unhandledRejection', error => {
     throw error;
@@ -86,7 +87,7 @@ async function init() {
     });
 
     for (const [key, obj] of mapSorted.entries()) {
-        logger.write(`${obj.name} | ${obj.saleDate} | ${obj.followerCount} | <https://twitter.com/${obj.twitterId}>\n`)
+        logger.write(`${obj.name} ${process.env.LOG_FILES_SEPARATOR} ${obj.saleDate} ${process.env.LOG_FILES_SEPARATOR} ${obj.followerCount} ${process.env.LOG_FILES_SEPARATOR} <https://twitter.com/${obj.twitterId}>\n`)
     }
 
     logger.end()
