@@ -2,14 +2,17 @@ require('dotenv').config();
 // OPTIMIZE:
 // 1. Log in
 // 2. Chain proxy https://stackoverflow.com/questions/68930114/bypass-cloudflares-captcha-with-headless-chrome-using-puppeteer-on-heroku
-process.env.TZ = 'America/Toronto' 
-process.on('unhandledRejection', error => {
-    throw error;
-});
 
 const puppeteer = require('puppeteer-extra')
 const fs = require('fs');
+const Logger = require('../_utils/logger')
+const logger = new Logger('etherscan-minting')
 
+process.env.TZ = 'America/Toronto' 
+process.on('unhandledRejection', error => {
+    logger.finish();
+    throw error;
+});
 
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
@@ -24,6 +27,7 @@ const UA = userAgent || USER_AGENT;
 console.log('------------------------------');
 console.log((new Date()).toISOString());
 console.log('Start');
+
 init();
 
 async function init() {
@@ -96,13 +100,10 @@ async function init() {
     console.log(`All done, check the screenshots. ✨`)
     await browser.close()
 
-    const logger = fs.createWriteStream(`/home/hipi/Sites/GooDee/nft-scraper/logs/${(new Date().toJSON())}.txt`, {
-        flags: 'a'
-    });
-    console.log(`Write`)
     for (const [key, obj] of mapSorted.entries()) {
-        logger.write(`${key} ${process.env.LOG_FILES_SEPARATOR} ${obj.count} ${process.env.LOG_FILES_SEPARATOR} <${obj.url}>\n`)
+        logger.write({name: key, count: obj.count, url: obj.url});
+        //logger.write(`${key} ${process.env.LOG_FILES_SEPARATOR} ${obj.count} ${process.env.LOG_FILES_SEPARATOR} <${obj.url}>\n`)
     }
       
-    logger.end()
+    logger.finish()
 }

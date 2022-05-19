@@ -1,12 +1,16 @@
 require('dotenv').config();
-process.env.TZ = 'America/Toronto'
-process.on('unhandledRejection', error => {
-    throw error;
-});
 
 const puppeteer = require('puppeteer-extra')
 const fs = require('fs');
 const { TwitterApi } = require('twitter-api-v2');
+const Logger = require('../_utils/logger')
+const logger = new Logger('rare-upcoming')
+
+process.env.TZ = 'America/Toronto'
+process.on('unhandledRejection', error => {
+    logger.finish();
+    throw error;
+});
 
 const userClient = new TwitterApi({
     appKey: '2yoD9AScEFJWIVI6lc6Nmg',
@@ -75,20 +79,16 @@ async function init() {
         const saleDate = upcoming[i]["Sale Date"];
         const twitterId = upcoming[i]["TwitterId"];
         const followerCount = (await userClient.v1.user({ screen_name: twitterId }))["followers_count"];
-        collections.set(id, { name, saleDate, twitterId, followerCount});
+        collections.set(id, { name: name, saleDate: saleDate, twitter: `https://twitter.com/${twitterId}`, followerCount: followerCount});
     }
     const mapSorted = new Map([...collections.entries()].sort((a, b) => b[1].followerCount - a[1].followerCount));
 
     console.log(`All done, check the screenshots. ✨`)
     await browser.close()
 
-    const logger = fs.createWriteStream(`/home/hipi/Sites/GooDee/nft-scraper/logs-rare/${(new Date().toJSON())}.txt`, {
-        flags: 'a'
-    });
-
     for (const [key, obj] of mapSorted.entries()) {
-        logger.write(`${obj.name} ${process.env.LOG_FILES_SEPARATOR} ${obj.saleDate} ${process.env.LOG_FILES_SEPARATOR} ${obj.followerCount} ${process.env.LOG_FILES_SEPARATOR} <https://twitter.com/${obj.twitterId}>\n`)
+        logger.write(obj);
     }
 
-    logger.end()
+    logger.finish()
 }

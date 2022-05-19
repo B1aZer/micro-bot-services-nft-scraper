@@ -1,11 +1,12 @@
-process.env.TZ = 'America/Toronto'
-process.on('unhandledRejection', error => {
-    throw error;
-});
-
 const puppeteer = require('puppeteer-extra')
 const Logger = require('../_utils/logger')
 const logger = new Logger('prominent-whitelists')
+
+process.env.TZ = 'America/Toronto'
+process.on('unhandledRejection', error => {
+    logger.finish();
+    throw error;
+});
 
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
@@ -44,19 +45,20 @@ async function init() {
 
     await page.goto('https://www.niftyriver.io/analytics/whitelists', {
         waitUntil: 'networkidle0',
-    })
-    await page.waitForNetworkIdle()
+    });
+    await page.waitForNetworkIdle();
     
     // sort by followers
-    upcoming = upcoming.map(obj => ({name: obj.name, twitter: `https://twitter.com/${obj.twitter_username}`, created: obj.twitter_created, follower_count: obj.follower_count}))
-    upcoming.sort((a, b) => b.follower_count - a.follower_count)
+    upcoming = upcoming.map(obj => ({ name: obj.name, twitter: `https://twitter.com/${obj.twitter_username}`, created: obj.twitter_created, follower_count: obj.follower_count }));
+    upcoming.sort((a, b) => b.follower_count - a.follower_count);
 
-    console.log(`All done, check the screenshots. ✨`)
-    await browser.close()
+    console.log(`All done, check the screenshots. ✨`);
+    await browser.close();
 
     for (const obj of upcoming) {
-        logger.write(obj)
+        logger.write(obj);
     }
 
-    logger.finish()
+    logger.finish();
+
 }
