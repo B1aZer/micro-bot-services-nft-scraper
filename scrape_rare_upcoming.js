@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const puppeteer = require('puppeteer-extra')
 const fs = require('fs');
-const { TwitterApi } = require('twitter-api-v2');
+const twitter = require('../_utils/twitter');
 const Logger = require('../_utils/logger')
 const logger = new Logger('rare-upcoming')
 
@@ -12,16 +12,6 @@ process.on('unhandledRejection', error => {
     throw error;
 });
 
-const userClient = new TwitterApi({
-    appKey: '2yoD9AScEFJWIVI6lc6Nmg',
-    appSecret: 'qf2Pi3qsHvA0RjomsnNRhY5iKDWHIVy9DQWGBzDQIkw',
-    // Following access tokens are not required if you are
-    // at part 1 of user-auth process (ask for a request token)
-    // or if you want a app-only client (see below)
-    accessToken: '41890375-2jC8etQNIDnskeTxifSLD45FsufIBXSewLTdUGhpa',
-    accessSecret: 'LrVnDgj1tEDTaSn1gR8D8klkUEMhHRZOnmAbFrh8Tl2KD',
-  });
-  
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 puppeteer.use(StealthPlugin())
@@ -78,7 +68,7 @@ async function init() {
         const name = upcoming[i]["Project"];
         const saleDate = upcoming[i]["Sale Date"];
         const twitterId = upcoming[i]["TwitterId"];
-        const followerCount = (await userClient.v1.user({ screen_name: twitterId }))["followers_count"];
+        const followerCount = (await twitter.v1.user({ screen_name: twitterId }))["followers_count"];
         collections.set(id, { name: name, saleDate: saleDate, twitter: `https://twitter.com/${twitterId}`, followerCount: followerCount});
     }
     const mapSorted = new Map([...collections.entries()].sort((a, b) => b[1].followerCount - a[1].followerCount));
