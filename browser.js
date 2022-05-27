@@ -20,11 +20,12 @@ const userAgent = randomUseragent.getRandom();
 const UA = userAgent || USER_AGENT;
 
 class Browser {
-    constructor() {
-        this.start();
+    constructor(headless=true) {
+        this.headless = headless;
+        //this.start();
     }
     async start() {
-        this.browser = await puppeteer.launch({ headless: false });
+        this.browser = await puppeteer.launch({ headless: this.headless });
         this.page = await this.browser.newPage();
         //Randomize viewport size
         await this.page.setViewport({
@@ -44,4 +45,4 @@ class Browser {
     }
 }
 
-module.exports = new Browser();
+module.exports = Browser;

@@ -50,6 +50,7 @@ async function init() {
     
     // sort by followers
     upcoming = upcoming.map(obj => ({ name: obj.name, twitter: `https://twitter.com/${obj.twitter_username}`, created: obj.twitter_created, follower_count: obj.follower_count }));
+    // TODO: names can be blank we can use twitter api here to get info
     upcoming.sort((a, b) => b.follower_count - a.follower_count);
 
     console.log(`All done, check the screenshots. ✨`);
