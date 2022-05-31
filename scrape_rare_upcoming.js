@@ -53,26 +53,34 @@ async function init() {
     })
     await page.waitForNetworkIdle()
     
-    const date = new Date();
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
     // filter tomorrow
     upcoming = upcoming.filter((proj) => {
         let projDate = new Date(proj["Sale Date"]);
-        return projDate.getFullYear() === date.getFullYear()
-            && projDate.getMonth() === date.getMonth()
-            && projDate.getDate() === date.getDate() + 1;   
+        return projDate.getFullYear() === tomorrowDate.getFullYear()
+            && projDate.getMonth() === tomorrowDate.getMonth()
+            && projDate.getDate() === tomorrowDate.getDate();   
     })
-
+    console.log(`upcoming: ${upcoming.length}`);
     const collections = new Map();
     for (let i = 0; i < upcoming.length; i++) {
         const id = upcoming[i]["id"];
         const name = upcoming[i]["Project"];
         const saleDate = upcoming[i]["Sale Date"];
         const twitterId = upcoming[i]["TwitterId"];
-        const followerCount = (await twitter.v1.user({ screen_name: twitterId }))["followers_count"];
+        let followerCount = 0;
+        try {
+            followerCount = (await twitter.v1.user({ screen_name: twitterId }))["followers_count"];
+        } catch (err) {
+            console.log(`[ERROR]: ${JSON.stringify(err)}`);
+            continue;
+        }
         collections.set(id, { name: name, saleDate: saleDate, twitter: `https://twitter.com/${twitterId}`, followerCount: followerCount});
     }
+    console.log(`collections: ${collections.size}`);
     const mapSorted = new Map([...collections.entries()].sort((a, b) => b[1].followerCount - a[1].followerCount));
-
+    console.log(`mapSorted: ${mapSorted.size}`);
     console.log(`All done, check the screenshots. ✨`)
     await browser.close()
 
