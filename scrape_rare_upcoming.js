@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const puppeteer = require('puppeteer-extra')
-const fs = require('fs');
+const axios = require('axios');
 const twitter = require('../_utils/twitter');
 const Logger = require('../_utils/logger')
 const logger = new Logger('rare-upcoming')
@@ -26,6 +26,7 @@ const UA = userAgent || USER_AGENT;
 init();
 
 async function init() {
+    /*
     const browser = await puppeteer.launch({ headless: true })
     const page = await browser.newPage()
 
@@ -47,12 +48,14 @@ async function init() {
             upcoming = await response.json();
         }
     });
-
+    console.log(`go to page`);
     await page.goto('https://rarity.tools/upcoming', {
         waitUntil: 'networkidle0',
     })
     await page.waitForNetworkIdle()
-    
+    console.log(`page loaded`);
+    */
+    let { data: upcoming } = await axios.get('https://collections.rarity.tools/upcoming2');
     const tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
     // filter tomorrow
@@ -82,7 +85,7 @@ async function init() {
     const mapSorted = new Map([...collections.entries()].sort((a, b) => b[1].followerCount - a[1].followerCount));
     console.log(`mapSorted: ${mapSorted.size}`);
     console.log(`All done, check the screenshots. ✨`)
-    await browser.close()
+    //await browser.close()
 
     for (const [key, obj] of mapSorted.entries()) {
         logger.write(obj);
